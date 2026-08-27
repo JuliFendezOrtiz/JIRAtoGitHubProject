@@ -1,0 +1,12 @@
+# Configuración con credenciales reales (usar config.example.yml como plantilla)
+03-Script-Migracion/config.yml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Sistema
+.DS_Store
+Thumbs.db
