@@ -1,5 +1,6 @@
 # Configuración con credenciales reales (usar config.example.yml como plantilla)
 03-Script-Migracion/config.yml
+.github/skills/configurar-migracion-jira-github/scripts/config.yml
 
 # Python
 __pycache__/

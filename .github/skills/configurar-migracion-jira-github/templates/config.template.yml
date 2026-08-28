@@ -1,0 +1,61 @@
+# ============================================================================
+# PLANTILLA base de configuración que la skill rellena durante la migración.
+# Los marcadores <ENTRE_ANGULOS> los sustituye la skill con lo inferido de la
+# URL de Jira / GitHub y lo confirmado con el usuario.
+#
+# La copia final se guarda como 03-Script-Migracion/config.yml (nunca se sube).
+# ============================================================================
+
+# --- Origen: Jira -----------------------------------------------------------
+jira:
+  base_url: "<JIRA_BASE_URL>"          # inferido de la URL, p. ej. https://empresa.atlassian.net
+  email: "<JIRA_EMAIL>"                # pedir al usuario
+  api_token: "env:JIRA_API_TOKEN"      # NO escribir el token; se define como variable de entorno
+  jql: "project = <CLAVE> AND statusCategory != Done ORDER BY created ASC"  # <CLAVE> inferida de la URL
+
+# --- Destino: GitHub --------------------------------------------------------
+github:
+  token: "env:GITHUB_TOKEN"            # NO escribir el token; variable de entorno
+  owner: "<GITHUB_OWNER>"              # organización o usuario dueño del repo/project
+  repo: "<GITHUB_REPO>"                # repositorio donde se crearán los Issues
+  project_number: <PROJECT_NUMBER>     # número del Project v2 (visible en la URL)
+
+# --- Mapeos (ajustar solo si difieren de los valores por defecto) -----------
+mapping:
+  story_points_field: "customfield_10016"
+  status_field: "Status"
+  priority_field: "Priority"
+  estimate_field: "Estimate"
+
+  issue_type_to_label:
+    Story: "type: story"
+    Bug: "type: bug"
+    Task: "type: task"
+    Epic: "type: epic"
+    Spike: "type: spike"
+
+  extra_labels:
+    - "migrated-from-jira"
+
+  status:
+    "To Do": "Backlog"
+    "Backlog": "Backlog"
+    "Selected for Development": "Ready"
+    "In Progress": "In Progress"
+    "In Review": "In Review"
+    "Done": "Done"
+
+  priority:
+    "Highest": "P0"
+    "High": "P1"
+    "Medium": "P2"
+    "Low": "P3"
+    "Lowest": "P3"
+
+  users:
+    "<EMAIL_JIRA_USUARIO_1>": "<GITHUB_LOGIN_1>"
+
+# --- Opciones de ejecución --------------------------------------------------
+options:
+  migrate_comments: true
+  throttle_seconds: 0.5

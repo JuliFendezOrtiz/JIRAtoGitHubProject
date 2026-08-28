@@ -1,0 +1,75 @@
+# ============================================================================
+# Configuración del script de migración Jira -> GitHub Projects
+# ----------------------------------------------------------------------------
+# Copia este fichero a "config.yml" y rellena tus valores.
+#   cp config.example.yml config.yml
+#
+# Para NO escribir tokens en claro, puedes usar variables de entorno:
+#   api_token: "env:JIRA_API_TOKEN"     # lee la variable de entorno JIRA_API_TOKEN
+#   token: "${GITHUB_TOKEN}"            # también admite expansión ${VAR}
+# ============================================================================
+
+# --- Origen: Jira -----------------------------------------------------------
+jira:
+  base_url: "https://tu-empresa.atlassian.net"   # URL de tu instancia de Jira
+  email: "tu-usuario@tu-empresa.com"             # email de la cuenta Jira
+  api_token: "env:JIRA_API_TOKEN"                # https://id.atlassian.com/manage-profile/security/api-tokens
+  # JQL que selecciona los issues a migrar. Ajusta el proyecto y los filtros.
+  jql: "project = ABC AND statusCategory != Done ORDER BY created ASC"
+
+# --- Destino: GitHub --------------------------------------------------------
+github:
+  token: "env:GITHUB_TOKEN"     # PAT con permisos: repo, project
+  owner: "mi-organizacion"      # organización o usuario dueño del repo/project
+  repo: "mi-repositorio"        # repositorio donde se crearán los Issues
+  project_number: 1             # número del Project v2 (visible en la URL). Omitir para no usar Project.
+
+# --- Mapeos (solo si es necesario) -----------------------------------------------------------------
+mapping:
+  # Nombre del campo personalizado de Jira que guarda los Story Points.
+  # Habitualmente "customfield_10016". Déjalo vacío si no lo usas.
+  story_points_field: "customfield_10016"
+
+  # Nombres de los campos del Project v2 en GitHub (respeta mayúsculas).
+  status_field: "Status"
+  priority_field: "Priority"
+  estimate_field: "Estimate"
+
+  # Tipo de issue de Jira -> Label de GitHub
+  issue_type_to_label:
+    Story: "type: story"
+    Bug: "type: bug"
+    Task: "type: task"
+    Epic: "type: epic"
+    Spike: "type: spike"
+
+  # Labels que se añaden a TODOS los issues migrados (opcional).
+  extra_labels:
+    - "migrated-from-jira"
+
+  # Estado de Jira -> opción del campo Status del Project (deben existir en el Project).
+  status:
+    "To Do": "Backlog"
+    "Backlog": "Backlog"
+    "Selected for Development": "Ready"
+    "In Progress": "In Progress"
+    "In Review": "In Review"
+    "Done": "Done"
+
+  # Prioridad de Jira -> opción del campo Priority del Project.
+  priority:
+    "Highest": "P0"
+    "High": "P1"
+    "Medium": "P2"
+    "Low": "P3"
+    "Lowest": "P3"
+
+  # Usuario de Jira (email o displayName) -> usuario de GitHub (login).
+  users:
+    "usuario1@tu-empresa.com": "github-user-1"
+    "usuario2@tu-empresa.com": "github-user-2"
+
+# --- Opciones de ejecución --------------------------------------------------
+options:
+  migrate_comments: true    # migrar comentarios de cada issue
+  throttle_seconds: 0.5     # pausa entre issues para no golpear los rate limits
